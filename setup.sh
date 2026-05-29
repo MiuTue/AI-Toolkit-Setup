@@ -48,9 +48,11 @@ echo -e "${BLUE}[1/5]${NC} 📦 Cài đặt hệ thống AI (.ai/agents, .ai/ski
 if [ -d "${TEMPLATE_DIR}/.ai" ]; then
     cp -R "${TEMPLATE_DIR}/.ai" "${PROJECT_DIR}/"
     echo -e "  ${GREEN}✓${NC} .ai/agents/  — 14 Agent chuyên biệt (Planner, Coder, Reviewer, Tester...)"
-    echo -e "  ${GREEN}✓${NC} .ai/skills/  — 82+ Skills (frontend-design, databases, deploy, security...)"
+    echo -e "  ${GREEN}✓${NC} .ai/skills/claude-skills/   — 82+ Skills chính thức (frontend-design, databases, deploy...)"
+    echo -e "  ${GREEN}✓${NC} .ai/skills/community-skills/ — 1450+ Skills cộng đồng (react, fastapi, docker, prompt-engineering...)"
     echo -e "  ${GREEN}✓${NC} .ai/rules/   — 7 bộ Rules (workflow, orchestration, development...)"
-    echo -e "  ${GREEN}✓${NC} .ai/SKILLS-CATALOG.md — Danh mục tra cứu toàn bộ Skills"
+    echo -e "  ${GREEN}✓${NC} .ai/SKILLS-CATALOG.md — Danh mục tra cứu Skills chính thức"
+    echo -e "  ${GREEN}✓${NC} .ai/SKILLS-GUIDE.md  — Hướng dẫn chọn skill theo tình huống thực tế"
 fi
 
 # ---- STEP 2: Copy file cấu hình từng AI ----

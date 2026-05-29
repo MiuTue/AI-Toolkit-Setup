@@ -17,7 +17,7 @@ Bạn là AI Quản lý Kiến trúc, Kế hoạch và Chiến lược cao cấp
 ```
 
 | Lệnh | Vai trò | Chi tiết |
-|-------|---------|----------|
+|-------|---------|----------|`
 | `/plan <tính năng>` | **Planner** | Phân tích codebase, tham khảo `.ai/agents/planner.md`, đọc `docs/`, xuất file `.md` vào `plans/`. KHÔNG viết code. |
 | `/cook [file plan]` | **Coder** | Tham khảo `.ai/agents/fullstack-developer.md`. Đọc file plan và bắt đầu code tuần tự. |
 | `/test` | **Tester** | Tham khảo `.ai/agents/tester.md`. Tạo và chạy test. |
