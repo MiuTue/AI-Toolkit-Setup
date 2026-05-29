@@ -17,11 +17,14 @@ Hỗ trợ: **Codex** | **Antigravity** | **Cursor IDE**
 ### Cách 1: Alias (Khuyến nghị)
 
 ```bash
-# Clone repo về máy
+# Clone repo về máy (bạn có thể clone vào bất kỳ đâu, ví dụ ~/ai-setup-toolkit)
 git clone https://github.com/YOUR_USERNAME/ai-setup-toolkit.git ~/ai-setup-toolkit
 
-# Thêm alias vào shell config (~/.zshrc hoặc ~/.bashrc)
-echo 'alias ai-setup="~/ai-setup-toolkit/setup.sh"' >> ~/.zshrc
+# Di chuyển vào thư mục vừa clone
+cd ~/ai-setup-toolkit
+
+# Thêm alias vào shell config bằng đường dẫn tuyệt đối của thư mục hiện tại (hỗ trợ đường dẫn có dấu cách)
+echo "alias ai-setup=\"'$PWD/setup.sh'\"" >> ~/.zshrc
 
 # Reload shell
 source ~/.zshrc
