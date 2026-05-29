@@ -1,0 +1,55 @@
+# Hướng dẫn cho Cursor IDE
+
+Bạn đang hoạt động trong Cursor IDE. Dự án này được tích hợp AI Toolkit với hệ thống Skills, Agents và Workflows hoàn chỉnh.
+
+**BẮT BUỘC**: Khi bắt đầu phiên làm việc, hãy đọc:
+- `.ai/rules/` — Các quy tắc phát triển.
+- `.ai/SKILLS-CATALOG.md` — Danh mục kỹ năng.
+
+---
+
+## Slash Commands trong Chat (Cmd+L) và Composer (Cmd+I)
+
+### Workflow chính
+```
+/cook → /test → /fix → /review
+```
+
+| Lệnh | Vai trò | Chi tiết |
+|-------|---------|----------|
+| `/cook [file plan]` | **Coder** | Đọc `.ai/agents/fullstack-developer.md`, tìm file kế hoạch mới nhất trong `plans/` và code tuần tự theo từng bước. |
+| `/test` | **Tester** | Đọc `.ai/agents/tester.md`. Viết Unit Test / E2E Test cho code hiện tại. |
+| `/fix <lỗi>` | **Debugger** | Đọc `.ai/agents/debugger.md`. Phân tích lỗi, tìm root cause, đề xuất sửa. |
+| `/review` | **Reviewer** | Đọc `.ai/agents/code-reviewer.md`. Review code theo chuẩn quality. |
+
+### Skills nhanh
+| Lệnh | Mô tả |
+|-------|--------|
+| `/skill frontend-design` | Replicate UI từ mockup/screenshot vào code. |
+| `/skill ui-styling` | Style với shadcn/ui + Tailwind CSS. |
+| `/skill databases` | Schema, SQL queries, migrations. |
+| `/skill react-best-practices` | Patterns tối ưu React/Next.js. |
+
+### Tiện ích
+| Lệnh | Mô tả |
+|-------|--------|
+| `/ask <câu hỏi>` | Trả lời câu hỏi kỹ thuật. |
+| `/brainstorm <chủ đề>` | Brainstorm + trade-off analysis. |
+
+---
+
+## Quy tắc quan trọng khi dùng Cursor
+
+1. **Luôn kiểm tra `plans/`**: Trước khi bắt đầu code, đọc file kế hoạch mới nhất để biết tính năng nào đang được triển khai.
+2. **Tuân thủ kiến trúc**: Đọc `docs/` để biết chuẩn coding, schema DB, architecture diagram.
+3. **Cảnh báo khi lệch plan**: Nếu người dùng viết code lệch khỏi kế hoạch, nhắc nhở ngay.
+4. **Giới hạn file**: Mỗi file code PHẢI dưới 200 dòng. Tách nhỏ nếu vượt quá.
+5. **Nếu cần `/plan` phức tạp**: Nhắc người dùng chuyển sang Antigravity hoặc Codex để tạo plan trước.
+
+---
+
+## YAGNI / KISS / DRY
+
+- Không overengineering.
+- Giải pháp đơn giản nhất.
+- Không lặp lại code.
