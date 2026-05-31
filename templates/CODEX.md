@@ -11,6 +11,8 @@ Bạn là một AI Engineer cao cấp. Dự án này được tích hợp bộ c
 
 ## Slash Commands (Lệnh chính)
 
+> **CẢNH BÁO CỰC KỲ QUAN TRỌNG DÀNH CHO AI**: Khi người dùng gõ một lệnh bắt đầu bằng dấu `/` (ví dụ `/plan`, `/cook`, `/skill`), ĐÓ LÀ LỆNH DÀNH CHO BẠN. BẠN **BẮT BUỘC** PHẢI DÙNG CÔNG CỤ ĐỌC FILE (như `view_file`, `Read`...) ĐỂ ĐỌC FILE `.md` CỦA AGENT HOẶC SKILL TƯƠNG ỨNG TRƯỚC KHI LÀM BẤT CỨ VIỆC GÌ KHÁC. NẾU KHÔNG ĐỌC FILE, BẠN SẼ LÀM SAI.
+
 ### Workflow chính (Core Development)
 ```
 /plan → /cook → /test → /review → /ship → /journal
@@ -18,12 +20,12 @@ Bạn là một AI Engineer cao cấp. Dự án này được tích hợp bộ c
 
 | Lệnh | Vai trò | Chi tiết |
 |-------|---------|----------|
-| `/plan <tính năng>` | **Planner Agent** | Đọc `.ai/agents/planner.md`. Phân tích codebase, tạo file kế hoạch `.md` vào `plans/`. KHÔNG viết code. |
-| `/cook [file plan]` | **Coder Agent** | Đọc `.ai/agents/fullstack-developer.md`. Thực thi code theo file kế hoạch. |
-| `/test` | **Tester Agent** | Đọc `.ai/agents/tester.md`. Viết và chạy tests. |
-| `/review` | **Code Reviewer Agent** | Đọc `.ai/agents/code-reviewer.md`. Review code đã viết. |
-| `/docs` | **Docs Manager Agent** | Đọc `.ai/agents/docs-manager.md`. Cập nhật tài liệu trong `docs/`. |
-| `/debug <vấn đề>` | **Debugger Agent** | Đọc `.ai/agents/debugger.md`. Phân tích lỗi, tìm root cause. |
+| `/plan <tính năng>` | **Planner Agent** | BẮT BUỘC ĐỌC file `.ai/agents/planner.md`. Phân tích codebase, tạo file kế hoạch `.md` vào `plans/`. KHÔNG viết code. |
+| `/cook [file plan]` | **Coder Agent** | BẮT BUỘC ĐỌC file `.ai/agents/fullstack-developer.md`. Thực thi code theo file kế hoạch. |
+| `/test` | **Tester Agent** | BẮT BUỘC ĐỌC file `.ai/agents/tester.md`. Viết và chạy tests. |
+| `/review` | **Code Reviewer Agent** | BẮT BUỘC ĐỌC file `.ai/agents/code-reviewer.md`. Review code đã viết. |
+| `/docs` | **Docs Manager Agent** | BẮT BUỘC ĐỌC file `.ai/agents/docs-manager.md`. Cập nhật tài liệu trong `docs/`. |
+| `/debug <vấn đề>` | **Debugger Agent** | BẮT BUỘC ĐỌC file `.ai/agents/debugger.md`. Phân tích lỗi, tìm root cause. |
 
 ### Workflow Bugfix
 ```
@@ -38,7 +40,7 @@ Bạn là một AI Engineer cao cấp. Dự án này được tích hợp bộ c
 ### Skills (Kỹ năng chuyên biệt)
 | Lệnh | Mô tả |
 |-------|--------|
-| `/skill <tên skill>` | Kích hoạt kỹ năng từ `.ai/skills/claude-skills/<tên>/SKILL.md`. |
+| `/skill <tên skill>` | **BẮT BUỘC**: Dùng tool đọc file để ĐỌC file `SKILL.md` của skill đó trong `.ai/skills/` (claude-skills hoặc community-skills) TRƯỚC KHI làm. |
 | `/skill ui-check` | Phân tích giao diện, so sánh mockup vs code. |
 | `/skill frontend-design` | Tạo giao diện từ screenshot/mockup. |
 | `/skill databases` | Thiết kế schema, viết query SQL/NoSQL. |

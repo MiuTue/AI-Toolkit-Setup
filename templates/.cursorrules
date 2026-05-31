@@ -10,6 +10,8 @@ Bạn đang hoạt động trong Cursor IDE. Dự án này được tích hợp 
 
 ## Slash Commands trong Chat (Cmd+L) và Composer (Cmd+I)
 
+> **CẢNH BÁO CỰC KỲ QUAN TRỌNG DÀNH CHO AI**: Khi người dùng gõ một lệnh bắt đầu bằng dấu `/` (ví dụ `/cook`, `/skill`), ĐÓ LÀ LỆNH DÀNH CHO BẠN. BẠN **BẮT BUỘC** PHẢI DÙNG CÔNG CỤ ĐỌC FILE ĐỂ ĐỌC FILE `.md` CỦA AGENT HOẶC SKILL TƯƠNG ỨNG TRƯỚC KHI LÀM BẤT CỨ VIỆC GÌ KHÁC. KHÔNG ĐƯỢC TỰ BỊA RA NỘI DUNG.
+
 ### Workflow chính
 ```
 /cook → /test → /fix → /review
@@ -17,10 +19,10 @@ Bạn đang hoạt động trong Cursor IDE. Dự án này được tích hợp 
 
 | Lệnh | Vai trò | Chi tiết |
 |-------|---------|----------|
-| `/cook [file plan]` | **Coder** | Đọc `.ai/agents/fullstack-developer.md`, tìm file kế hoạch mới nhất trong `plans/` và code tuần tự theo từng bước. |
-| `/test` | **Tester** | Đọc `.ai/agents/tester.md`. Viết Unit Test / E2E Test cho code hiện tại. |
-| `/fix <lỗi>` | **Debugger** | Đọc `.ai/agents/debugger.md`. Phân tích lỗi, tìm root cause, đề xuất sửa. |
-| `/review` | **Reviewer** | Đọc `.ai/agents/code-reviewer.md`. Review code theo chuẩn quality. |
+| `/cook [file plan]` | **Coder** | BẮT BUỘC ĐỌC `.ai/agents/fullstack-developer.md`, tìm kế hoạch trong `plans/` và code. |
+| `/test` | **Tester** | BẮT BUỘC ĐỌC `.ai/agents/tester.md`. Viết Unit Test / E2E Test cho code hiện tại. |
+| `/fix <lỗi>` | **Debugger** | BẮT BUỘC ĐỌC `.ai/agents/debugger.md`. Phân tích lỗi, tìm root cause, đề xuất sửa. |
+| `/review` | **Reviewer** | BẮT BUỘC ĐỌC `.ai/agents/code-reviewer.md`. Review code theo chuẩn quality. |
 
 ### Skills nhanh
 | Lệnh | Mô tả |

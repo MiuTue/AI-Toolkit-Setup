@@ -64,6 +64,9 @@ my-project/
 
 ## 🎯 Slash Commands Reference
 
+> **Lưu ý quan trọng về UI**: Các IDE như Cursor, Codex hay Antigravity **sẽ không hiện popup** danh sách các lệnh này khi bạn gõ dấu `/`. 
+> Menu popup của IDE chỉ dành cho các lệnh gốc của hệ thống (như `/goal`). Để sử dụng AI Toolkit, bạn cứ **gõ lệnh như một tin nhắn bình thường** (ví dụ: gõ chữ `/skill frontend-design` vào khung chat rồi nhấn Enter). AI đã được cấu hình để tự động đọc hiểu và làm theo.
+
 ### Core Workflow
 ```
 /plan → /cook → /test → /review → /docs
