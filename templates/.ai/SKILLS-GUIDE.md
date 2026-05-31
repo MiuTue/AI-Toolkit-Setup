@@ -29,28 +29,32 @@ Bộ toolkit có **1450+ community skills** + **82+ claude-skills chính thức*
 | Tình huống | Skill | Gõ lệnh |
 |-----------|-------|---------|
 | Có ảnh mockup/screenshot | `frontend-design` | `/skill frontend-design` + kèm ảnh |
-| Muốn chọn màu, font, layout | `ui-ux-pro-max` | `/skill ui-ux-pro-max` |
+| Định hình màu sắc, layout, UX | `ui-ux-pro-max` | `/skill ui-ux-pro-max` |
 | Dùng Tailwind + shadcn/ui | `ui-styling` | `/skill ui-styling` |
-| Thiết kế 3D / WebGL | `threejs` | `/skill threejs` |
+| Thiết kế 3D / WebGL cơ bản | `threejs` | `/skill threejs` |
+| Làm Animation / Motion | `animejs-animation` | `/skill animejs-animation` |
 | Cần audit giao diện cũ | `web-design-guidelines` | `/skill web-design-guidelines` |
 
-**Community skills bổ sung:**
-- `high-end-visual-design` — Thiết kế cao cấp
-- `design-taste-frontend` — Nâng cấp "taste" giao diện
-- `minimalist-ui` — UI tối giản
-- `baseline-ui` — UI nền tảng chuẩn
+**Community skills bổ sung cực mạnh cho Frontend & UI:**
+- **Three.js chuyên sâu:** `threejs-fundamentals`, `threejs-geometry`, `threejs-lighting`, `threejs-materials`, `threejs-shaders`, `threejs-animation`, v.v.
+- **Phong cách thiết kế:** `high-end-visual-design`, `industrial-brutalist-ui`, `minimalist-ui`, `baseline-ui`
+- **UI Components & CSS:** `radix-ui-design-system`, `tailwind-design-system`, `tailwind-patterns`, `magic-ui-generator`
+- **Nâng cấp "taste" (Gout thẩm mỹ):** `design-taste-frontend`, `stitch-design-taste`, `stitch-ui-design`
+- **Hoạt ảnh (Animation):** `animejs-animation`, `makepad-animation`
 
 ---
 
-### ⚛️ "Tôi đang code React / Next.js"
+### ⚛️ "Tôi đang code React / Next.js / Frontend Framework"
 
 | Tình huống | Skill |
 |-----------|-------|
-| Patterns React chuẩn | `react-best-practices` |
-| Next.js App Router, SSR | `web-frameworks` |
-| State management | `react-state-management` (community) |
-| Component patterns | `react-patterns` (community) |
-| TanStack (Router, Form, AI) | `tanstack` |
+| Patterns React chuẩn | `react-best-practices` (hoặc `react-patterns`) |
+| Tối ưu hiệu năng Component | `react-component-performance` |
+| Refactor/Nâng cấp code cũ | `react-modernization` |
+| Next.js App Router, SSR | `web-frameworks` (hoặc `react-nextjs-development`) |
+| State management | `react-state-management` |
+| SvelteKit | `sveltekit` |
+| Dùng Functional Programming | `fp-react` |
 
 ---
 
