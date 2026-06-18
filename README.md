@@ -6,11 +6,12 @@ Hỗ trợ: **Codex** | **Antigravity** | **Cursor IDE**
 ## ✨ Tính năng
 
 - **82+ Skills** tích hợp sẵn (frontend-design, databases, deploy, security-scan, ai-multimodal...)
+- **24 Addy Osmani Skills** production-grade (spec-driven-development, TDD, security-and-hardening, git-workflow...)
 - **14 Agents** chuyên biệt (Planner, Fullstack Developer, Tester, Debugger, Code Reviewer, Docs Manager...)
 - **7 bộ Rules** điều khiển workflow (primary-workflow, orchestration-protocol, skill-domain-routing...)
 - **3 Plan Templates** chuẩn (Feature, Bug Fix, Refactor)
 - **Slash Commands** (`/plan`, `/cook`, `/test`, `/review`, `/skill`, `/debug`, `/fix`, `/brainstorm`...)
-- Một lệnh setup duy nhất, dùng được ngay trên cả 3 công cụ AI
+- **Một file duy nhất** `setup.sh` cho cả setup dự án lẫn quản lý skills
 
 ## 🚀 Cài đặt (1 lần duy nhất)
 
@@ -41,8 +42,12 @@ chmod +x ~/ai-setup-toolkit/setup.sh
 
 ```bash
 cd /path/to/my-project
-ai-setup
-# Hoặc: ~/ai-setup-toolkit/setup.sh
+ai-setup                          # Setup dự án (tạo .ai/, CODEX.md, plans/...)
+ai-setup skill                    # Menu thêm Addy Osmani skills
+ai-setup skill bundle:essential   # 8 production-grade skills thiết yếu
+ai-setup skill all                # Tất cả 24 skills
+ai-setup skill --list             # Xem danh sách 24 skills
+ai-setup skill spec-driven-development  # Thêm 1 skill cụ thể
 ```
 
 Lệnh trên sẽ tự động tạo:
