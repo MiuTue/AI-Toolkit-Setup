@@ -1,137 +1,84 @@
 # AI Setup Toolkit
 
-Bộ công cụ tự động thiết lập môi trường AI Engineer cho mọi dự án.  
-Hỗ trợ: **Codex** | **Antigravity** | **Cursor IDE**
+Thiết lập agent hiện đại cho dự án: một `AGENTS.md` chung, skills theo chuẩn mở trong `.agents/skills`, và cấu hình subagent riêng khi Codex hoặc Antigravity cần.
 
-## ✨ Tính năng
+Hỗ trợ chính: **Codex**, **Google Antigravity**, **Cursor**. Claude Code vẫn có thể nhận skills qua `--target claude`.
 
-- **82+ Skills** tích hợp sẵn (frontend-design, databases, deploy, security-scan, ai-multimodal...)
-- **24 Addy Osmani Skills** production-grade (spec-driven-development, TDD, security-and-hardening, git-workflow...)
-- **14 Agents** chuyên biệt (Planner, Fullstack Developer, Tester, Debugger, Code Reviewer, Docs Manager...)
-- **7 bộ Rules** điều khiển workflow (primary-workflow, orchestration-protocol, skill-domain-routing...)
-- **3 Plan Templates** chuẩn (Feature, Bug Fix, Refactor)
-- **Slash Commands** (`/plan`, `/cook`, `/test`, `/review`, `/skill`, `/debug`, `/fix`, `/brainstorm`...)
-- **Một file duy nhất** `setup.sh` cho cả setup dự án lẫn quản lý skills
+## Mô hình cài đặt
 
-## 🚀 Cài đặt (1 lần duy nhất)
+```text
+my-project/
+├── AGENTS.md                  # Chỉ dẫn chung cho agent
+├── .agents/
+│   ├── skills/                 # Workflow skills: SKILL.md + assets tùy chọn
+│   └── agents/                 # Subagent Markdown cho Antigravity
+├── .codex/
+│   └── agents/                 # Subagent TOML cho Codex
+└── plans/                      # Plan dài hạn, nếu dự án cần
+```
 
-### Cách 1: Alias (Khuyến nghị)
+`AGENTS.md` là lớp hướng dẫn chung, không phải nơi nhét toàn bộ workflow. Skills được agent tự nhận diện theo `description`, hoặc gọi rõ ràng bằng `$skill-name` trong Codex và `/skill-name` trong Antigravity.
+
+## Cài đặt toolkit
 
 ```bash
-# Clone repo về máy (bạn có thể clone vào bất kỳ đâu, ví dụ ~/ai-setup-toolkit)
 git clone https://github.com/YOUR_USERNAME/ai-setup-toolkit.git ~/ai-setup-toolkit
-
-# Di chuyển vào thư mục vừa clone
 cd ~/ai-setup-toolkit
-
-# Thêm alias vào shell config bằng đường dẫn tuyệt đối của thư mục hiện tại (hỗ trợ đường dẫn có dấu cách)
-echo "alias ai-setup=\"'$PWD/setup.sh'\"" >> ~/.zshrc
-
-# Reload shell
+chmod +x setup.sh
+echo "alias ai-setup='$PWD/setup.sh'" >> ~/.zshrc
 source ~/.zshrc
 ```
 
-### Cách 2: Chạy trực tiếp
-
-```bash
-git clone https://github.com/YOUR_USERNAME/ai-setup-toolkit.git ~/ai-setup-toolkit
-chmod +x ~/ai-setup-toolkit/setup.sh
-```
-
-## 📦 Sử dụng trên dự án
+## Dùng trong một dự án
 
 ```bash
 cd /path/to/my-project
-ai-setup                          # Setup dự án (tạo .ai/, CODEX.md, plans/...)
-ai-setup skill                    # Menu thêm Addy Osmani skills
-ai-setup skill bundle:essential   # 8 production-grade skills thiết yếu
-ai-setup skill all                # Tất cả 24 skills
-ai-setup skill --list             # Xem danh sách 24 skills
-ai-setup skill spec-driven-development  # Thêm 1 skill cụ thể
+ai-setup
 ```
 
-Lệnh trên sẽ tự động tạo:
+Lệnh này không ghi đè `AGENTS.md`, `.agents/`, hoặc `.codex/` đã tồn tại. Bản cài mặc định gồm 6 workflow skills (`plan-feature`, `implement-plan`, `fix-bug`, `review-change`, `verify-change`, `update-docs`), 24 skills Addy Osmani đã cache, cùng profile `reviewer` và `researcher` cho Codex/Antigravity.
 
-```
-my-project/
-├── .ai/                          # Hệ sinh thái AI dùng chung
-│   ├── agents/                   # 14 agent (planner.md, fullstack-developer.md, tester.md...)
-│   ├── skills/claude-skills/     # 82+ skills (frontend-design, databases, deploy...)
-│   ├── rules/                    # 7 bộ rules (workflow, orchestration, development...)
-│   └── SKILLS-CATALOG.md         # Danh mục tra cứu nhanh
-├── docs/                         # Tài liệu kiến trúc dự án
-├── plans/                        # Nơi lưu file kế hoạch
-│   └── templates/                # 3 plan templates (feature, bug-fix, refactor)
-├── CODEX.md                      # System prompt cho Codex
-├── GEMINI.md                     # System prompt cho Antigravity
-└── .cursorrules                  # Rules cho Cursor IDE
-```
+## Thêm skills theo nhu cầu
 
-## 🎯 Slash Commands Reference
+```bash
+# Cài vào .agents/skills của dự án hiện tại — mặc định
+ai-setup skill bundle:essential
 
-> **Lưu ý quan trọng về UI**: Các IDE như Cursor, Codex hay Antigravity **sẽ không hiện popup** danh sách các lệnh này khi bạn gõ dấu `/`. 
-> Menu popup của IDE chỉ dành cho các lệnh gốc của hệ thống (như `/goal`). Để sử dụng AI Toolkit, bạn cứ **gõ lệnh như một tin nhắn bình thường** (ví dụ: gõ chữ `/skill frontend-design` vào khung chat rồi nhấn Enter). AI đã được cấu hình để tự động đọc hiểu và làm theo.
+# Cài một skill cụ thể
+ai-setup skill security-and-hardening
 
-### Core Workflow
-```
-/plan → /cook → /test → /review → /docs
+# Xem danh sách skills
+ai-setup skill --list
+
+# Chỉ cài cho Claude Code ở user scope
+ai-setup skill code-review-and-quality --target claude
 ```
 
-| Lệnh | Mô tả | Dùng trên |
-|-------|--------|-----------|
-| `/plan <tính năng>` | Lên kế hoạch chi tiết | Codex, Antigravity |
-| `/cook [file plan]` | Viết code theo plan | Codex, Cursor, Antigravity |
-| `/test` | Viết & chạy test | Codex, Cursor |
-| `/review` | Review code quality | Codex, Cursor, Antigravity |
-| `/fix <lỗi>` | Sửa lỗi nhanh | Codex, Cursor |
-| `/debug <vấn đề>` | Phân tích root cause | Codex, Antigravity |
-| `/docs` | Cập nhật tài liệu | Codex, Antigravity |
+Không cài toàn bộ catalog community vào mọi dự án: số lượng skills lớn làm danh sách discovery bị cắt ngắn và gây nhiễu context. Chỉ cài skill cần cho stack, domain và workflow thực tế.
 
-### Skills
-| Lệnh | Mô tả |
-|-------|--------|
-| `/skill frontend-design` | Tạo UI từ mockup/screenshot |
-| `/skill ui-ux-pro-max` | Thiết kế UI/UX chuyên sâu |
-| `/skill databases` | Schema, queries, migrations |
-| `/skill deploy` | Deploy lên hosting |
-| `/skill security-scan` | Quét lỗ hổng bảo mật |
-| `/skill ai-multimodal` | Phân tích ảnh/video/audio |
+## Workflow khuyến nghị
 
-### Tiện ích
-| Lệnh | Mô tả |
-|-------|--------|
-| `/brainstorm <chủ đề>` | Brainstorm + trade-off |
-| `/ask <câu hỏi>` | Hỏi kỹ thuật chuyên sâu |
-| `/watzup` | Tổng kết phiên làm việc |
-| `/journal` | Viết journal kỹ thuật |
-
-## 📋 Ví dụ sử dụng thực tế
-
-### Thêm tính năng mới
-```
-1. Mở Antigravity/Codex → /plan Thêm hệ thống thanh toán Stripe
-2. AI tạo file plans/20260529-stripe-payment.md
-3. Mở Cursor → mở file plan → /cook
-4. Cursor tự động code theo từng bước trong plan
-5. Gõ /test → AI viết test
-6. Gõ /review → AI review code
+```text
+plan-feature → implement-plan → verify-change → review-change → update-docs
+                         └── fix-bug khi có lỗi
 ```
 
-### Sửa lỗi
-```
-1. Mở Codex → /debug Lỗi không login được trên mobile
-2. AI phân tích root cause
-3. /fix → AI đề xuất và sửa lỗi
-4. /test → Chạy lại test suite
-```
+Skills thay cho workflow Markdown cũ. Antigravity đang chuyển Workflows sang Agent Skills; skill vẫn có thể được gọi như slash command.
 
-### Gọi Skill đặc biệt
-```
-1. Mở Antigravity → /skill frontend-design [kèm ảnh mockup]
-2. AI phân tích mockup và tạo component React
-3. /skill databases → AI thiết kế schema cho tính năng
-```
+## Khi nào dùng plugin
 
-## 📄 License
+Đặt skill riêng của repository trong `.agents/skills/`. Chỉ đóng gói plugin khi cần chia sẻ workflow ổn định cho team, gom nhiều skills, hoặc kèm MCP/connector. Với Codex, dùng `$plugin-creator`; không cần plugin chỉ để cài một skill nội bộ.
 
-MIT License
+## Ghi chú cho từng công cụ
+
+- **Codex:** đọc `AGENTS.md`, quét `.agents/skills`, và nhận custom subagent từ `.codex/agents/*.toml`.
+- **Antigravity:** đọc `AGENTS.md`, quét `.agents/skills`; custom subagent đặt tại `.agents/agents/`.
+- **Cursor:** dùng `AGENTS.md` cho quy tắc chung; chỉ tạo `.cursor/rules/` khi cần scope theo thư mục hoặc glob. Không tạo `.cursorrules` mới.
+- **Claude Code:** dùng `CLAUDE.md` và `.claude/skills/`; target `claude` giữ tương thích cho trường hợp này.
+
+## Tài liệu chính thức
+
+- [Codex: AGENTS.md](https://developers.openai.com/codex/guides/agents-md)
+- [Codex: Skills](https://learn.chatgpt.com/docs/build-skills)
+- [Antigravity: Skills](https://antigravity.google/docs/skills)
+- [Antigravity: Workflows to Skills](https://antigravity.google/docs/migration/workflows-to-skills)

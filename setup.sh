@@ -3,9 +3,9 @@
 # AI Setup Toolkit — All-in-One
 #
 # SUBCOMMANDS:
-#   ./setup.sh                           Setup dự án (KHÔNG tự cài skills)
+#   ./setup.sh                           Setup dự án theo chuẩn AGENTS.md + .agents/
 #   ./setup.sh skill [arg] [--target X]  Cài Addy Osmani skills
-#   ./setup.sh commands [arg]            Cài Addy slash commands (/spec /plan /build...)
+#   ./setup.sh commands [arg]            Cài legacy Claude Code commands
 #   ./setup.sh help                      Trợ giúp đầy đủ
 #
 # SKILL ARGS:
@@ -20,12 +20,11 @@
 #   --list                 Liệt kê 7 commands
 #   <tên>                  Cài 1 command: spec|plan|build|test|review|ship|code-simplify
 #
-# --target (dùng kèm skill hoặc commands):
-#   kiro      → ~/.kiro/skills/         (Kiro IDE, global)
-#   claude    → ~/.claude/skills/       (Claude Code, global)
-#   project   → ./.claude/skills/      (Claude Code, chỉ dự án này)
-#   both      → claude + kiro cùng lúc
-#   auto      → tự phát hiện (mặc định)
+# --target (dùng kèm skill):
+#   project|codex|antigravity → ./.agents/skills/ (mặc định, theo repo)
+#   claude                    → ~/.claude/skills/ (Claude Code global)
+#   kiro                      → ~/.kiro/skills/   (Kiro global)
+#   both                      → project + claude
 #
 # BUNDLES:
 #   essential | define | plan | build | verify | review | ship
@@ -40,7 +39,7 @@ BOLD='\033[1m';      DIM='\033[2m';      NC='\033[0m'
 TOOLKIT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 TEMPLATE_DIR="${TOOLKIT_DIR}/templates"
 PROJECT_DIR="$(pwd)"
-ADDY_CACHE="${TOOLKIT_DIR}/templates/.ai/skills/addy-skills"
+ADDY_CACHE="${TOOLKIT_DIR}/templates/.agents/skills"
 CMD_CACHE="${TOOLKIT_DIR}/templates/addy-commands"
 REMOTE_BASE="https://raw.githubusercontent.com/addyosmani/agent-skills/main"
 
@@ -113,30 +112,22 @@ _fetch() {
   fi
 }
 
-# Resolve target dir(s) từ flag --target
+# Resolve target dir(s) từ flag --target. `.agents/skills` là đường dẫn chung
+# được Codex và Antigravity quét trong repository.
 # Output: một hoặc nhiều dòng, mỗi dòng là 1 đường dẫn
 _resolve_targets() {
   local mode="${1:-auto}"
   case "$mode" in
+    project|codex|antigravity) echo "${PROJECT_DIR}/.agents/skills" ;;
     kiro)    echo "${HOME}/.kiro/skills" ;;
     claude)  echo "${HOME}/.claude/skills" ;;
-    project) echo "${PROJECT_DIR}/.claude/skills" ;;
     both)
-      echo "${HOME}/.kiro/skills"
+      echo "${PROJECT_DIR}/.agents/skills"
       echo "${HOME}/.claude/skills"
       ;;
-    auto)
-      # Ưu tiên: nếu có Kiro → kiro; nếu có .claude global → claude; fallback kiro
-      if [[ -d "${HOME}/.kiro" ]]; then
-        echo "${HOME}/.kiro/skills"
-      elif [[ -d "${HOME}/.claude" ]]; then
-        echo "${HOME}/.claude/skills"
-      else
-        echo "${HOME}/.kiro/skills"
-      fi
-      ;;
+    auto) echo "${PROJECT_DIR}/.agents/skills" ;;
     *)
-      echo -e "  ${RED}✗${NC}  --target không hợp lệ: '$mode'. Dùng: kiro|claude|project|both|auto" >&2
+      echo -e "  ${RED}✗${NC}  --target không hợp lệ: '$mode'. Dùng: project|codex|antigravity|claude|kiro|both" >&2
       return 1
       ;;
   esac
@@ -165,7 +156,7 @@ _skill_badge() {
   local badge=""
   [[ -f "${HOME}/.kiro/skills/${name}/SKILL.md" ]]     && badge+=" ${GREEN}[kiro]${NC}"
   [[ -f "${HOME}/.claude/skills/${name}/SKILL.md" ]]   && badge+=" ${CYAN}[claude]${NC}"
-  [[ -f "${PROJECT_DIR}/.claude/skills/${name}/SKILL.md" ]] && badge+=" ${BLUE}[project]${NC}"
+  [[ -f "${PROJECT_DIR}/.agents/skills/${name}/SKILL.md" ]] && badge+=" ${BLUE}[project]${NC}"
   [[ -f "${ADDY_CACHE}/${name}/SKILL.md" ]]            && badge+=" ${DIM}[cached]${NC}"
   echo "$badge"
 }
@@ -186,7 +177,7 @@ _cmd_badge() {
 cmd_setup() {
   echo ""
   echo -e "${CYAN}${BOLD}╔══════════════════════════════════════════════════════╗${NC}"
-  echo -e "${CYAN}${BOLD}║   🚀 AI Setup Toolkit — Codex / Claude / Kiro / Cursor  ║${NC}"
+  echo -e "${CYAN}${BOLD}║   🚀 AI Setup Toolkit — Codex / Antigravity / Cursor   ║${NC}"
   echo -e "${CYAN}${BOLD}╚══════════════════════════════════════════════════════╝${NC}"
   echo ""
   echo -e "${BLUE}📂 Toolkit:${NC} ${TOOLKIT_DIR}"
@@ -202,60 +193,66 @@ cmd_setup() {
     exit 1
   fi
 
-  echo -e "${BLUE}[1/5]${NC} 📦 Cài .ai/ (agents, skills, rules)..."
-  if [[ -d "${TEMPLATE_DIR}/.ai" ]]; then
-    cp -R "${TEMPLATE_DIR}/.ai" "${PROJECT_DIR}/"
-    echo -e "  ${GREEN}✓${NC} .ai/agents/            — 14 Agents chuyên biệt"
-    echo -e "  ${GREEN}✓${NC} .ai/skills/claude-skills/    — 82+ Skills chính thức"
-    echo -e "  ${GREEN}✓${NC} .ai/skills/community-skills/ — 1450+ Community skills"
-    echo -e "  ${GREEN}✓${NC} .ai/rules/             — 7 bộ Rules workflow"
-    echo -e "  ${GREEN}✓${NC} .ai/SKILLS-CATALOG.md  — Danh mục tra cứu"
-    echo -e "  ${GREEN}✓${NC} .ai/SKILLS-GUIDE.md    — Hướng dẫn chọn skill"
+  echo -e "${BLUE}[1/6]${NC} 📝 AGENTS.md..."
+  if [[ -f "${PROJECT_DIR}/AGENTS.md" ]]; then
+    echo -e "  ${YELLOW}↷${NC} AGENTS.md đã có — giữ nguyên"
+  else
+    cp "${TEMPLATE_DIR}/AGENTS.md" "${PROJECT_DIR}/AGENTS.md"
+    echo -e "  ${GREEN}✓${NC} AGENTS.md — hướng dẫn chung cho Codex, Cursor, Antigravity"
   fi
 
-  echo -e "${BLUE}[2/5]${NC} 📝 File cấu hình AI..."
-  [[ -f "${TEMPLATE_DIR}/CODEX.md" ]]     && cp "${TEMPLATE_DIR}/CODEX.md" "${PROJECT_DIR}/CODEX.md"       && echo -e "  ${GREEN}✓${NC} CODEX.md"
-  [[ -f "${TEMPLATE_DIR}/GEMINI.md" ]]    && cp "${TEMPLATE_DIR}/GEMINI.md" "${PROJECT_DIR}/GEMINI.md"     && echo -e "  ${GREEN}✓${NC} GEMINI.md"
-  [[ -f "${TEMPLATE_DIR}/.cursorrules" ]] && cp "${TEMPLATE_DIR}/.cursorrules" "${PROJECT_DIR}/.cursorrules" && echo -e "  ${GREEN}✓${NC} .cursorrules"
+  echo -e "${BLUE}[2/6]${NC} 🧩 .agents/..."
+  if [[ -d "${PROJECT_DIR}/.agents" ]]; then
+    echo -e "  ${YELLOW}↷${NC} .agents/ đã có — giữ nguyên để không ghi đè customizations"
+  else
+    cp -R "${TEMPLATE_DIR}/.agents" "${PROJECT_DIR}/.agents"
+    echo -e "  ${GREEN}✓${NC} .agents/skills/ — 30 skills có progressive discovery"
+    echo -e "  ${GREEN}✓${NC} .agents/agents/ — reviewer, researcher cho Antigravity"
+  fi
 
-  echo -e "${BLUE}[3/5]${NC} 📚 docs/..."
+  echo -e "${BLUE}[3/6]${NC} 🤖 .codex/agents/..."
+  if [[ -d "${PROJECT_DIR}/.codex" ]]; then
+    echo -e "  ${YELLOW}↷${NC} .codex/ đã có — giữ nguyên"
+  else
+    cp -R "${TEMPLATE_DIR}/.codex" "${PROJECT_DIR}/.codex"
+    echo -e "  ${GREEN}✓${NC} .codex/agents/ — reviewer, researcher cho Codex"
+  fi
+
+  echo -e "${BLUE}[4/6]${NC} 📚 docs/..."
   mkdir -p "${PROJECT_DIR}/docs"
   [[ -d "${TEMPLATE_DIR}/docs" ]] && cp -R "${TEMPLATE_DIR}/docs/"* "${PROJECT_DIR}/docs/" 2>/dev/null || true
   echo -e "  ${GREEN}✓${NC} docs/"
 
-  echo -e "${BLUE}[4/5]${NC} 📋 plans/..."
+  echo -e "${BLUE}[5/6]${NC} 📋 plans/..."
   mkdir -p "${PROJECT_DIR}/plans/templates"
   [[ -d "${TEMPLATE_DIR}/plans" ]] && cp -R "${TEMPLATE_DIR}/plans/"* "${PROJECT_DIR}/plans/" 2>/dev/null || true
   echo -e "  ${GREEN}✓${NC} plans/templates/ — feature, bug-fix, refactor templates"
 
-  echo -e "${BLUE}[5/5]${NC} 🔒 .gitignore..."
+  echo -e "${BLUE}[6/6]${NC} 🔒 .gitignore..."
   if [[ -f "${PROJECT_DIR}/.gitignore" ]]; then
-    if ! grep -q "claude-skills/_shared" "${PROJECT_DIR}/.gitignore" 2>/dev/null; then
-      printf '\n# AI Toolkit\n.ai/skills/claude-skills/.env\n.ai/skills/claude-skills/.env.*\n' >> "${PROJECT_DIR}/.gitignore"
+    if ! grep -q ".agents/skills/.env" "${PROJECT_DIR}/.gitignore" 2>/dev/null; then
+      printf '\n# Agent skills\n.agents/skills/.env\n.agents/skills/.env.*\n' >> "${PROJECT_DIR}/.gitignore"
       echo -e "  ${GREEN}✓${NC} Đã thêm entries"
     else
       echo -e "  ${GREEN}✓${NC} Đã có sẵn"
     fi
   else
-    printf '# AI Toolkit\n.ai/skills/claude-skills/.env\n.ai/skills/claude-skills/.env.*\n' > "${PROJECT_DIR}/.gitignore"
+    printf '# Agent skills\n.agents/skills/.env\n.agents/skills/.env.*\n' > "${PROJECT_DIR}/.gitignore"
     echo -e "  ${GREEN}✓${NC} Tạo mới"
   fi
 
   echo ""
   echo -e "${GREEN}${BOLD}══════════════════════════════════════════════════════${NC}"
-  echo -e "${GREEN}${BOLD}  ✅ Setup xong! Skills chưa được cài — dùng lệnh bên dưới.${NC}"
+  echo -e "${GREEN}${BOLD}  ✅ Setup xong! Skills workflow đã sẵn sàng trong .agents/.${NC}"
   echo -e "${GREEN}${BOLD}══════════════════════════════════════════════════════${NC}"
   echo ""
-  echo -e "${BOLD}⚡ Bước tiếp theo — thêm Addy Osmani skills & commands:${NC}"
+  echo -e "${BOLD}⚡ Bước tiếp theo — thêm Addy Osmani skills theo nhu cầu:${NC}"
   echo ""
-  echo -e "  ${CYAN}$(basename "$0") commands${NC}               — Cài 7 slash commands (/spec /plan /build...)"
-  echo -e "  ${CYAN}$(basename "$0") skill bundle:essential${NC}  — 8 production-grade skills thiết yếu"
+  echo -e "  ${CYAN}$(basename "$0") skill bundle:essential${NC}  — 8 production-grade skills thiết yếu vào .agents/skills"
   echo -e "  ${CYAN}$(basename "$0") skill all${NC}               — Tất cả 24 skills"
   echo -e "  ${CYAN}$(basename "$0") skill --list${NC}            — Xem danh sách 24 skills"
   echo ""
-  echo -e "${DIM}Hoặc cài trực tiếp trong Claude Code:${NC}"
-  echo -e "  ${DIM}/plugin marketplace add addyosmani/agent-skills${NC}"
-  echo -e "  ${DIM}/plugin install agent-skills@addy-agent-skills${NC}"
+  echo -e "${DIM}Dùng \$skill-name hoặc /skills trong Codex; dùng /skill-name trong Antigravity.${NC}"
   echo ""
 }
 
@@ -298,7 +295,7 @@ _skill_list() {
   echo -e "  ${CYAN}bundle:review${NC}     — Review  (4)  ${CYAN}bundle:ship${NC}    — Ship    (6)"
   echo -e "  ${CYAN}all${NC}               — Tất cả 24 skills"
   echo ""
-  echo -e "${DIM}--target: kiro(mặc định) | claude | project | both${NC}"
+  echo -e "${DIM}--target: project(mặc định) | codex | antigravity | claude | kiro | both${NC}"
   echo ""
 }
 
@@ -470,7 +467,7 @@ cmd_skill() {
 
   echo ""
   echo -e "${GREEN}${BOLD}══════════════════════════════════════════════════════${NC}"
-  echo -e "${GREEN}${BOLD}  ✅ Xong! Dùng trong Claude Code / Kiro:${NC}"
+  echo -e "${GREEN}${BOLD}  ✅ Xong! Skill đã được cài vào target đã chọn:${NC}"
   echo -e "${GREEN}${BOLD}══════════════════════════════════════════════════════${NC}"
   echo ""
   echo -e "  ${YELLOW}/skill spec-driven-development${NC}     — Spec trước khi code"
@@ -483,7 +480,7 @@ cmd_skill() {
 }
 
 # ================================================================
-# CMD_COMMANDS — cài 7 Addy slash commands vào .claude/commands/
+# CMD_COMMANDS — compatibility layer: cài 7 Addy slash commands vào .claude/commands/
 # ================================================================
 
 # Nội dung inline của 7 commands (không cần mạng khi đã cache)
@@ -675,8 +672,8 @@ CMDEOF
 
 _commands_list() {
   echo ""
-  echo -e "${BOLD}⚡ 7 Slash Commands — addyosmani/agent-skills${NC}"
-  echo -e "${DIM}   Cài vào .claude/commands/ để dùng trong Claude Code${NC}"
+  echo -e "${BOLD}⚡ 7 Legacy Claude Code Commands — addyosmani/agent-skills${NC}"
+  echo -e "${DIM}   Codex/Antigravity dùng SKILL.md trong .agents/skills thay cho commands.${NC}"
   echo ""
   echo -e "  ${BOLD}Command          Kích hoạt skill                    Mô tả${NC}"
   echo -e "  ${DIM}─────────────────────────────────────────────────────────────────${NC}"
@@ -779,7 +776,7 @@ cmd_commands() {
 
   echo ""
   echo -e "${CYAN}${BOLD}╔═══════════════════════════════════════════════════════╗${NC}"
-  echo -e "${CYAN}${BOLD}║   ⚡ Addy Osmani Slash Commands — Claude Code           ║${NC}"
+  echo -e "${CYAN}${BOLD}║   ⚡ Legacy Addy Commands — Claude Code                 ║${NC}"
   echo -e "${CYAN}${BOLD}╚═══════════════════════════════════════════════════════╝${NC}"
   echo ""
   echo -e "${BLUE}📂 Cài vào:${NC} ${dest_dir}"
@@ -833,9 +830,9 @@ cmd_help() {
   echo -e "${DIM}Addy Osmani agent-skills + production-grade workflow${NC}"
   echo ""
   echo -e "${BOLD}SUBCOMMANDS:${NC}"
-  echo -e "  ${CYAN}setup${NC}              Setup dự án (.ai/, CODEX.md, plans/) — KHÔNG cài skills"
+  echo -e "  ${CYAN}setup${NC}              Setup AGENTS.md, .agents/, .codex/, plans/"
   echo -e "  ${CYAN}skill${NC} [arg]        Cài Addy Osmani production skills"
-  echo -e "  ${CYAN}commands${NC} [arg]     Cài 7 slash commands (/spec /plan /build...)"
+  echo -e "  ${CYAN}commands${NC} [arg]     Cài 7 legacy slash commands cho Claude Code"
   echo -e "  ${CYAN}help${NC}               Trợ giúp này"
   echo ""
   echo -e "${BOLD}SKILL ARGS:${NC}"
@@ -856,18 +853,19 @@ cmd_help() {
   echo -e "  --list             Xem danh sách commands"
   echo -e "  spec|plan|build|test|review|code-simplify|ship"
   echo ""
-  echo -e "${BOLD}--target (dùng với skill hoặc commands):${NC}"
-  echo -e "  kiro               ~/.kiro/skills/         ${DIM}(Kiro IDE)${NC}"
+  echo -e "${BOLD}--target cho skill:${NC}"
+  echo -e "  project|codex      ./.agents/skills/       ${DIM}(Codex/Antigravity, mặc định)${NC}"
+  echo -e "  antigravity        ./.agents/skills/       ${DIM}(Antigravity)${NC}"
   echo -e "  claude             ~/.claude/skills/       ${DIM}(Claude Code, global)${NC}"
-  echo -e "  project            ./.claude/skills/       ${DIM}(Claude Code, dự án này)${NC}"
-  echo -e "  both               kiro + claude cùng lúc"
-  echo -e "  auto               Tự phát hiện ${DIM}(mặc định)${NC}"
+  echo -e "  kiro               ~/.kiro/skills/         ${DIM}(Kiro, global)${NC}"
+  echo -e "  both               project + claude"
+  echo -e "${DIM}commands chỉ dành cho Claude Code: --target project|claude|both|auto.${NC}"
   echo ""
   echo -e "${BOLD}EXAMPLES:${NC}"
   echo -e "  ${DIM}# Setup dự án mới (không cài skills):${NC}"
   echo -e "  $(basename "$0")"
   echo ""
-  echo -e "  ${DIM}# Sau setup — cài slash commands cho Claude Code:${NC}"
+  echo -e "  ${DIM}# Tùy chọn: cài legacy commands cho Claude Code:${NC}"
   echo -e "  $(basename "$0") commands"
   echo -e "  $(basename "$0") commands --target project   ${DIM}# chỉ dự án này${NC}"
   echo ""
