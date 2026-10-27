@@ -4,16 +4,16 @@
 #
 # SUBCOMMANDS:
 #   ./setup.sh                           Setup dự án theo chuẩn AGENTS.md + .agents/
-#   ./setup.sh skill [arg] [--target X]  Cài Addy Osmani skills
+#   ./setup.sh skill [arg] [--target X]  Cài Addy Osmani + Hallmark skills
 #   ./setup.sh commands [arg]            Cài legacy Claude Code commands
 #   ./setup.sh help                      Trợ giúp đầy đủ
 #
 # SKILL ARGS:
 #   (trống)                Menu tương tác
 #   <tên-skill>            Cài 1 skill
-#   all                    Cài cả 24 skills
+#   all                    Cài cả 25 skills
 #   bundle:<tên>           Cài theo nhóm
-#   --list                 Liệt kê 24 skills
+#   --list                 Liệt kê 25 skills
 #
 # COMMANDS ARGS:
 #   (trống)                Cài tất cả 7 slash commands
@@ -56,6 +56,7 @@ SKILLS=(
   "context-engineering|Build|Đưa đúng thông tin vào đúng thời điểm — rules files, MCP"
   "source-driven-development|Build|Mọi quyết định dựa trên docs chính thức"
   "doubt-driven-development|Build|Review adversarial fresh-context mọi quyết định quan trọng"
+  "hallmark|Build|Thiết kế web tránh AI slop — themes, redesign, audit và browser lint (Nutlope/hallmark)"
   "frontend-ui-engineering|Build|Component architecture, WCAG 2.1 AA, state management"
   "api-and-interface-design|Build|Contract-first, Hyrum's Law, error semantics"
   "browser-testing-with-devtools|Verify|Chrome DevTools MCP — DOM, console, network"
@@ -91,7 +92,7 @@ BUNDLE_ESSENTIAL=("using-agent-skills" "spec-driven-development" "planning-and-t
 BUNDLE_DEFINE=("using-agent-skills" "interview-me" "idea-refine" "spec-driven-development")
 BUNDLE_PLAN=("planning-and-task-breakdown")
 BUNDLE_BUILD=("incremental-implementation" "test-driven-development" "context-engineering"
-  "source-driven-development" "doubt-driven-development" "frontend-ui-engineering" "api-and-interface-design")
+  "source-driven-development" "doubt-driven-development" "frontend-ui-engineering" "api-and-interface-design" "hallmark")
 BUNDLE_VERIFY=("browser-testing-with-devtools" "debugging-and-error-recovery")
 BUNDLE_REVIEW=("code-review-and-quality" "code-simplification" "security-and-hardening" "performance-optimization")
 BUNDLE_SHIP=("git-workflow-and-versioning" "ci-cd-and-automation" "deprecation-and-migration"
@@ -206,7 +207,7 @@ cmd_setup() {
     echo -e "  ${YELLOW}↷${NC} .agents/ đã có — giữ nguyên để không ghi đè customizations"
   else
     cp -R "${TEMPLATE_DIR}/.agents" "${PROJECT_DIR}/.agents"
-    echo -e "  ${GREEN}✓${NC} .agents/skills/ — 30 skills có progressive discovery"
+    echo -e "  ${GREEN}✓${NC} .agents/skills/ — 31 skills có progressive discovery"
     echo -e "  ${GREEN}✓${NC} .agents/agents/ — reviewer, researcher cho Antigravity"
   fi
 
@@ -246,24 +247,24 @@ cmd_setup() {
   echo -e "${GREEN}${BOLD}  ✅ Setup xong! Skills workflow đã sẵn sàng trong .agents/.${NC}"
   echo -e "${GREEN}${BOLD}══════════════════════════════════════════════════════${NC}"
   echo ""
-  echo -e "${BOLD}⚡ Bước tiếp theo — thêm Addy Osmani skills theo nhu cầu:${NC}"
+  echo -e "${BOLD}⚡ Bước tiếp theo — thêm skills theo nhu cầu:${NC}"
   echo ""
   echo -e "  ${CYAN}$(basename "$0") skill bundle:essential${NC}  — 8 production-grade skills thiết yếu vào .agents/skills"
-  echo -e "  ${CYAN}$(basename "$0") skill all${NC}               — Tất cả 24 skills"
-  echo -e "  ${CYAN}$(basename "$0") skill --list${NC}            — Xem danh sách 24 skills"
+  echo -e "  ${CYAN}$(basename "$0") skill all${NC}               — Tất cả 25 skills"
+  echo -e "  ${CYAN}$(basename "$0") skill --list${NC}            — Xem danh sách 25 skills"
   echo ""
   echo -e "${DIM}Dùng \$skill-name hoặc /skills trong Codex; dùng /skill-name trong Antigravity.${NC}"
   echo ""
 }
 
 # ================================================================
-# CMD_SKILL — quản lý Addy Osmani skills
+# CMD_SKILL — quản lý Addy Osmani + Hallmark skills
 # ================================================================
 
 _skill_list() {
   echo ""
-  echo -e "${BOLD}📋 24 Production-Grade Skills — addyosmani/agent-skills${NC}"
-  echo -e "${DIM}   https://github.com/addyosmani/agent-skills${NC}"
+  echo -e "${BOLD}📋 25 Skills — Addy Osmani + Hallmark${NC}"
+  echo -e "${DIM}   https://github.com/addyosmani/agent-skills + https://github.com/Nutlope/hallmark${NC}"
   echo ""
 
   local cur_phase=""
@@ -291,9 +292,9 @@ _skill_list() {
   echo -e "${BOLD}📦 Bundles:${NC}"
   echo -e "  ${CYAN}bundle:essential${NC}  — 8 skills thiết yếu ${DIM}(mọi dự án nên có)${NC}"
   echo -e "  ${CYAN}bundle:define${NC}     — Define  (4)  ${CYAN}bundle:plan${NC}    — Plan    (1)"
-  echo -e "  ${CYAN}bundle:build${NC}      — Build   (7)  ${CYAN}bundle:verify${NC}  — Verify  (2)"
+  echo -e "  ${CYAN}bundle:build${NC}      — Build   (8)  ${CYAN}bundle:verify${NC}  — Verify  (2)"
   echo -e "  ${CYAN}bundle:review${NC}     — Review  (4)  ${CYAN}bundle:ship${NC}    — Ship    (6)"
-  echo -e "  ${CYAN}all${NC}               — Tất cả 24 skills"
+  echo -e "  ${CYAN}all${NC}               — Tất cả 25 skills"
   echo ""
   echo -e "${DIM}--target: project(mặc định) | codex | antigravity | claude | kiro | both${NC}"
   echo ""
@@ -316,18 +317,24 @@ _install_one_skill() {
   if [[ -f "$out_file" ]]; then
     echo -e "  ${DIM}↷  ${skill} (đã có tại ${dest##*/}, bỏ qua)${NC}"
     return 0
-    return 0
   fi
 
   echo -ne "  ${CYAN}⟳${NC}  ${YELLOW}${skill}${NC}..."
   mkdir -p "${dest}/${skill}"
 
   # local cache → GitHub
-  local cache="${ADDY_CACHE}/${skill}/SKILL.md"
-  if [[ -f "$cache" ]]; then
-    cp "$cache" "$out_file"
+  local cache="${ADDY_CACHE}/${skill}"
+  if [[ -f "$cache/SKILL.md" ]]; then
+    if ! cp -R "$cache/." "${dest}/${skill}/"; then
+      rm -f "$out_file"
+      echo -e "\r  ${RED}✗${NC}  ${skill} — không thể chép đầy đủ skill"
+      return 1
+    fi
     echo -e "\r  ${GREEN}✓${NC}  ${YELLOW}${skill}${NC} ${DIM}(cache)${NC}              "
     return 0
+  elif [[ "$skill" == hallmark ]]; then
+    echo -e "\r  ${RED}✗${NC}  hallmark — thiếu cache đầy đủ; hãy tải lại toolkit từ GitHub"
+    return 1
   elif _fetch "${REMOTE_BASE}/skills/${skill}/SKILL.md" "$out_file"; then
     # Save to local cache (best-effort, không ảnh hưởng exit code)
     mkdir -p "${ADDY_CACHE}/${skill}" 2>/dev/null
@@ -369,13 +376,14 @@ _install_skills_list() {
   done
   echo ""
   echo -e "  ${GREEN}${BOLD}✓ ${ok} cài thành công${NC}$([ $fail -gt 0 ] && echo " | ${RED}✗ ${fail} lỗi${NC}")"
+  [[ "$fail" -eq 0 ]]
 }
 
 _skill_menu() {
   echo -e "${BOLD}Chọn skills muốn cài:${NC}"
   echo ""
   echo -e "  ${CYAN}1${NC}  bundle:essential  — 8 skills thiết yếu ${DIM}(khuyến nghị)${NC}"
-  echo -e "  ${CYAN}2${NC}  all               — Tất cả 24 skills"
+  echo -e "  ${CYAN}2${NC}  all               — Tất cả 25 skills"
   echo -e "  ${CYAN}3${NC}  bundle:define     — Define phase"
   echo -e "  ${CYAN}4${NC}  bundle:build      — Build phase"
   echo -e "  ${CYAN}5${NC}  bundle:review     — Review phase"
@@ -387,7 +395,7 @@ _skill_menu() {
   case "$choice" in
     1) _install_skills_list "essential" "${BUNDLE_ESSENTIAL[@]}" ;;
     2)
-      echo -e "${BLUE}📦 Cài tất cả 24 skills...${NC}"; echo ""
+      echo -e "${BLUE}📦 Cài tất cả 25 skills...${NC}"; echo ""
       local ok=0 fail=0
       for entry in "${SKILLS[@]}"; do
         IFS='|' read -r name _ _ <<< "$entry"
@@ -395,7 +403,8 @@ _skill_menu() {
           if _install_one_skill "$name" "$dest"; then ok=$((ok+1)); else fail=$((fail+1)); fi
         done
       done
-      echo ""; echo -e "  ${GREEN}${BOLD}✓ ${ok}/24 cài thành công${NC}$([ $fail -gt 0 ] && echo " | ${RED}${fail} lỗi${NC}")"
+      echo ""; echo -e "  ${GREEN}${BOLD}✓ ${ok}/${#SKILLS[@]} cài thành công${NC}$([ $fail -gt 0 ] && echo " | ${RED}${fail} lỗi${NC}")"
+      [[ "$fail" -eq 0 ]]
       ;;
     3) _install_skills_list "define"  "${BUNDLE_DEFINE[@]}" ;;
     4) _install_skills_list "build"   "${BUNDLE_BUILD[@]}" ;;
@@ -433,7 +442,7 @@ cmd_skill() {
 
   echo ""
   echo -e "${CYAN}${BOLD}╔═══════════════════════════════════════════════════════╗${NC}"
-  echo -e "${CYAN}${BOLD}║   🎯 Addy Osmani Agent Skills — Production Grade       ║${NC}"
+  echo -e "${CYAN}${BOLD}║   🎯 Agent Skills — Addy Osmani + Hallmark             ║${NC}"
   echo -e "${CYAN}${BOLD}╚═══════════════════════════════════════════════════════╝${NC}"
   echo ""
   echo -e "${BLUE}📂 Target:${NC} ${TARGET_DIRS[*]}"
@@ -443,7 +452,7 @@ cmd_skill() {
     ""|menu)        _skill_menu ;;
     --list|-l)      _skill_list; return 0 ;;
     all)
-      echo -e "${BLUE}📦 Cài tất cả 24 skills...${NC}"; echo ""
+      echo -e "${BLUE}📦 Cài tất cả 25 skills...${NC}"; echo ""
       local ok=0 fail=0
       for entry in "${SKILLS[@]}"; do
         IFS='|' read -r name _ _ <<< "$entry"
@@ -451,7 +460,8 @@ cmd_skill() {
           if _install_one_skill "$name" "$dest"; then ok=$((ok+1)); else fail=$((fail+1)); fi
         done
       done
-      echo ""; echo -e "  ${GREEN}${BOLD}✓ ${ok}/24${NC}$([ $fail -gt 0 ] && echo " | ${RED}${fail} lỗi${NC}")"
+      echo ""; echo -e "  ${GREEN}${BOLD}✓ ${ok}/${#SKILLS[@]}${NC}$([ $fail -gt 0 ] && echo " | ${RED}${fail} lỗi${NC}")"
+      [[ "$fail" -eq 0 ]]
       ;;
     bundle:essential) _install_skills_list "essential" "${BUNDLE_ESSENTIAL[@]}" ;;
     bundle:define)    _install_skills_list "define"    "${BUNDLE_DEFINE[@]}" ;;
@@ -461,15 +471,23 @@ cmd_skill() {
     bundle:review)    _install_skills_list "review"    "${BUNDLE_REVIEW[@]}" ;;
     bundle:ship)      _install_skills_list "ship"      "${BUNDLE_SHIP[@]}" ;;
     *)
-      for dest in "${TARGET_DIRS[@]}"; do _install_one_skill "$arg" "$dest"; done
+      local failed=0
+      for dest in "${TARGET_DIRS[@]}"; do
+        _install_one_skill "$arg" "$dest" || failed=1
+      done
+      [[ "$failed" -eq 0 ]] || return 1
       ;;
   esac
+  local install_status=$?
+  [[ "$install_status" -eq 0 ]] || return "$install_status"
 
   echo ""
   echo -e "${GREEN}${BOLD}══════════════════════════════════════════════════════${NC}"
   echo -e "${GREEN}${BOLD}  ✅ Xong! Skill đã được cài vào target đã chọn:${NC}"
   echo -e "${GREEN}${BOLD}══════════════════════════════════════════════════════${NC}"
   echo ""
+  echo -e "  ${YELLOW}\$hallmark <prompt>${NC}                 — Thiết kế web (Codex)"
+  echo -e "  ${YELLOW}/hallmark audit ./index.html${NC}       — Audit giao diện"
   echo -e "  ${YELLOW}/skill spec-driven-development${NC}     — Spec trước khi code"
   echo -e "  ${YELLOW}/skill test-driven-development${NC}     — Red-Green-Refactor"
   echo -e "  ${YELLOW}/skill security-and-hardening${NC}      — OWASP + LLM audit"
@@ -827,23 +845,23 @@ cmd_commands() {
 cmd_help() {
   echo ""
   echo -e "${CYAN}${BOLD}AI Setup Toolkit — All-in-One${NC}"
-  echo -e "${DIM}Addy Osmani agent-skills + production-grade workflow${NC}"
+  echo -e "${DIM}Addy Osmani agent-skills + Hallmark design workflow${NC}"
   echo ""
   echo -e "${BOLD}SUBCOMMANDS:${NC}"
   echo -e "  ${CYAN}setup${NC}              Setup AGENTS.md, .agents/, .codex/, plans/"
-  echo -e "  ${CYAN}skill${NC} [arg]        Cài Addy Osmani production skills"
+  echo -e "  ${CYAN}skill${NC} [arg]        Cài Addy Osmani + Hallmark skills"
   echo -e "  ${CYAN}commands${NC} [arg]     Cài 7 legacy slash commands cho Claude Code"
   echo -e "  ${CYAN}help${NC}               Trợ giúp này"
   echo ""
   echo -e "${BOLD}SKILL ARGS:${NC}"
   echo -e "  (trống)            Menu tương tác"
-  echo -e "  --list             Xem 24 skills với trạng thái cài đặt"
+  echo -e "  --list             Xem 25 skills với trạng thái cài đặt"
   echo -e "  <tên>              Cài 1 skill cụ thể"
-  echo -e "  all                Cài tất cả 24 skills"
+  echo -e "  all                Cài tất cả 25 skills"
   echo -e "  bundle:essential   8 skills thiết yếu ${DIM}(khuyến nghị)${NC}"
   echo -e "  bundle:define      Define phase   (4 skills)"
   echo -e "  bundle:plan        Plan phase     (1 skill)"
-  echo -e "  bundle:build       Build phase    (7 skills)"
+  echo -e "  bundle:build       Build phase    (8 skills)"
   echo -e "  bundle:verify      Verify phase   (2 skills)"
   echo -e "  bundle:review      Review phase   (4 skills)"
   echo -e "  bundle:ship        Ship phase     (6 skills)"

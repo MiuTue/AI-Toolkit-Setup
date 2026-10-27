@@ -36,7 +36,7 @@ cd /path/to/my-project
 ai-setup
 ```
 
-Lệnh này không ghi đè `AGENTS.md`, `.agents/`, hoặc `.codex/` đã tồn tại. Bản cài mặc định gồm 6 workflow skills (`plan-feature`, `implement-plan`, `fix-bug`, `review-change`, `verify-change`, `update-docs`), 24 skills Addy Osmani đã cache, cùng profile `reviewer` và `researcher` cho Codex/Antigravity.
+Lệnh này không ghi đè `AGENTS.md`, `.agents/`, hoặc `.codex/` đã tồn tại. Bản cài mặc định gồm 6 workflow skills (`plan-feature`, `implement-plan`, `fix-bug`, `review-change`, `verify-change`, `update-docs`), 24 skills Addy Osmani đã cache, Hallmark, cùng profile `reviewer` và `researcher` cho Codex/Antigravity.
 
 ## Thêm skills theo nhu cầu
 
@@ -53,6 +53,32 @@ ai-setup skill --list
 # Chỉ cài cho Claude Code ở user scope
 ai-setup skill code-review-and-quality --target claude
 ```
+
+### Hallmark — thiết kế giao diện
+
+[Hallmark](https://github.com/Nutlope/hallmark) v2.0.0 giúp thiết kế web, redesign và audit giao diện để tránh các mẫu thiết kế AI lặp lại. Toolkit giữ nguyên toàn bộ skill MIT: `SKILL.md`, `references/` (48 themes và ảnh mẫu), `scripts/`, `agents/` và `LICENSE`.
+
+Hallmark được cài sẵn khi setup dự án mới; với dự án đã có `.agents/`, thêm riêng bằng:
+
+```bash
+ai-setup skill hallmark
+# Hoặc cài cùng nhóm build (8 skills)
+ai-setup skill bundle:build
+# Claude Code ở user scope
+ai-setup skill hallmark --target claude
+```
+
+Cài từ cache nên không cần mạng. Skill đã có sẽ được giữ nguyên. Target `codex`, `antigravity` và mặc định đều dùng `.agents/skills/` trong dự án; `both` cài thêm vào `~/.claude/skills/`.
+
+Gọi trong Codex bằng `$hallmark <mô tả trang>`. Với Claude Code dùng `/hallmark <mô tả trang>`, `/hallmark redesign <đường-dẫn>` hoặc `/hallmark audit <đường-dẫn>`. Hallmark chỉ áp dụng lên thiết kế hiện có khi được gọi rõ tên.
+
+Các scripts cần **Node.js 18+**. Kiểm tra trong trình duyệt và chụp ảnh cần thêm **Chrome** và **puppeteer-core** (`npm i -g puppeteer-core`); toolkit không tự cài các phụ thuộc này hoặc bật hooks. Kiểm tra tĩnh vẫn dùng được khi chưa có trình duyệt:
+
+```bash
+node .agents/skills/hallmark/scripts/sloplint.mjs ./index.html
+```
+
+Nguồn được ghim tại commit `7ec868225c6caa040558c321ee0fefa0e73f83a8`. Xem [ghi chú nguồn và cập nhật](templates/docs/hallmark.md).
 
 Không cài toàn bộ catalog community vào mọi dự án: số lượng skills lớn làm danh sách discovery bị cắt ngắn và gây nhiễu context. Chỉ cài skill cần cho stack, domain và workflow thực tế.
 
